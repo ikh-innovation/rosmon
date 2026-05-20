@@ -156,7 +156,7 @@ static int get_max_node_name(const rosmon::monitor::Monitor &monitor)
 
 	for(const auto& node : monitor.nodes())
 	{
-		max_width = std::max(max_width, node->fullName().size());
+		max_width = std::max(max_width, node->name().size());
 	}
 
 	return max_width;

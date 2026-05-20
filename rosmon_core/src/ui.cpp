@@ -118,7 +118,7 @@ void UI::setupColors()
 			| (std::min(255, std::max(0, static_cast<int>(g))) << 8)
 			| (std::min(255, std::max(0, static_cast<int>(b))) << 16);
 
-		m_nodeColorMap[m_monitor->nodes()[i]->fullName()] = ChannelInfo{&m_term, color};
+		m_nodeColorMap[m_monitor->nodes()[i]->name()] = ChannelInfo{&m_term, color};
 	}
 }
 
@@ -149,7 +149,8 @@ std::string UI::nodeDisplayName(monitor::NodeMonitor& node, std::size_t maxWidth
 	if(node.namespaceString().empty())
 		fullName = node.name();
 	else
-		fullName = node.namespaceString() + "/" + node.name();
+		fullName = node.name(); // bypass namespace
+		// fullName = node.namespaceString() + "/" + node.name();
 
 	// Strip initial / to save space
 	if(!fullName.empty() && fullName[0] == '/')
@@ -211,7 +212,7 @@ void UI::drawStatusLine()
 				default: state = "<UNKNOWN>"; break;
 			}
 
-			print("Node '{}' {}. Actions: ", selectedNode->fullName(), state);
+			print("Node '{}' {}. Actions: ", selectedNode->name(), state);
 			printKey("s", "start");
 			printKey("k", "stop");
 			printKey("d", "debug");
@@ -549,7 +550,7 @@ void UI::checkWindowSize()
 
 	std::size_t w = 20;
 	for(const auto& node : m_monitor->nodes())
-		w = std::max(w, node->fullName().size());
+		w = std::max(w, node->name().size());
 
 	m_nodeLabelWidth = std::min<unsigned int>(w, m_columns/4);
 }
