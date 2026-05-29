@@ -100,7 +100,7 @@ NodeMonitor::NodeMonitor(const launch::LaunchConfig::ConstPtr& config, const lau
  , m_muted(m_launchNode->isMuted())
 {
 	m_stdoutParser.setCallback([&](const LogParser::Event&& src){
-		LogEvent event{fullName(), std::move(src.message)};
+		LogEvent event{name(), std::move(src.message)};
 		event.muted = isMuted();
 		event.type = src.severity;
 		event.channel = LogEvent::Channel::Stdout;
@@ -109,7 +109,7 @@ NodeMonitor::NodeMonitor(const launch::LaunchConfig::ConstPtr& config, const lau
 		logMessageSignal(std::move(event));
 	});
 	m_stderrParser.setCallback([&](const LogParser::Event&& src){
-		LogEvent event{fullName(), std::move(src.message)};
+		LogEvent event{name(), std::move(src.message)};
 		event.muted = isMuted();
 		event.type = src.severity;
 		event.channel = LogEvent::Channel::Stderr;
@@ -563,13 +563,15 @@ void NodeMonitor::communicate()
 template<typename... Args>
 void NodeMonitor::log(const char* format, Args&& ... args)
 {
-	logMessageSignal({fullName(), fmt::format(format, std::forward<Args>(args)...)});
+	logMessageSignal({name(), fmt::format(format, std::forward<Args>(args)...)});
+	// logMessageSignal({fullName(), fmt::format(format, std::forward<Args>(args)...)});
 }
 
 template<typename... Args>
 void NodeMonitor::logTyped(LogEvent::Type type, const char* format, Args&& ... args)
 {
-	logMessageSignal({fullName(), fmt::format(format, std::forward<Args>(args)...), type});
+	logMessageSignal({name(), fmt::format(format, std::forward<Args>(args)...), type});
+	// logMessageSignal({fullName(), fmt::format(format, std::forward<Args>(args)...), type});
 }
 
 static boost::iterator_range<std::string::const_iterator>
